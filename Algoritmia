@@ -1,0 +1,178 @@
+//1 Nota media por rama profesional
+//asumiendo que los datos estan ordenados por rama
+
+declarar y/o inicializar
+	double media, 
+	int contador = 0, 
+	double sumaNotas = 0, 
+	String rama,
+	objeto registro, 
+	bool finFichero = false;
+
+abrir fichero;
+registro = leerSiguienteRegistro;
+rama = registro.getRama;
+while (finFichero == false){
+	do {
+		sumaNotas+=registro.notaFinal;
+		contador++;
+		registro=leerSiguienteRegistro;
+	}while (rama==registro.getRama);
+	media=sumaNotas/contador;
+	Imprimir "Media de: "+media+" para la rama: "+rama;
+	sumaNotas=0;
+	contador=0;
+	rama=registro.getRama;
+		if (registro==null) then finFichero=true;
+}
+
+
+//2 Nota media por ciclo formativo
+//asumiendo que los datos estan ordenados por rama y luego por ciclo
+
+declarar y/o inicializar
+double media, 
+int contador=0, 
+double sumaNotas=0, 
+String rama,
+String ciclo,
+blob registro, 
+bool finFichero=false;
+
+abrir fichero;
+registro=leerSiguienteRegistro;
+rama=registro.getRama;
+ciclo=registro.getCiclo;
+while (finFichero == false){
+	do {
+		do{
+			sumaNotas+=registro.notaFinal;
+			contador++;
+			registro=leerSiguienteRegistro;
+		}while(ciclo==registro.getCiclo;)
+		media=sumaNotas/contador;
+		Imprimir "Media de: "+media+" en el ciclo "+ciclo+" para la rama: "+rama;
+		sumaNotas=0;
+		contador=0;
+		ciclo=registro.getCiclo;
+	}while(rama==registro.getRama);
+	rama=registro.getRama;
+	if (registro==null) then finFichero=true;
+}
+
+//3 Nota media por curso
+//asumiendo que los datos estan ordenados por rama, luego ciclo, luego curso
+
+declarar y/o inicializar
+double media, 
+int contador=0, 
+double sumaNotas=0, 
+String rama,
+String ciclo,
+String curso,
+blob registro, 
+bool finFichero=false;
+
+abrir fichero;
+registro=leerSiguienteRegistro;
+rama=registro.getRama;
+ciclo=registro.getCiclo;
+curso=registro.getCurso;
+
+while (finFichero == false){
+	do {
+		do{
+			do{
+				sumaNotas+=registro.notaFinal;
+				contador++;
+				registro=leerSiguienteRegistro;
+			}while(curso==registro.getCurso);
+			media=sumaNotas/contador;
+			Imprimir "Media de: "+media+"en el curso "+curso+", en el ciclo "+ciclo+" para la rama: "+rama;
+			curso=registro.getCurso;
+		}while(ciclo==registro.getCiclo;)
+		sumaNotas=0;
+		contador=0;
+		ciclo=registro.getCiclo;
+	}while(rama==registro.getRama);
+	rama=registro.getRama;
+	if (registro==null) then finFichero=true;
+}
+
+//4 Nota maxima y minima por rama ciclo y curso. Cuantos alumnos las han alcanzado.
+declarar y/o inicializar
+double maxCurso=0,
+double minCurso=10,
+double maxCiclo=0,
+double minCiclo=10,
+double maxRama=0,
+double minRama=10,
+int sumaMinimos=0, 
+int sumaMaximos=0,
+
+String rama,
+String ciclo,
+String curso,
+blob registro, 
+bool finFichero=false;
+
+abrir fichero;
+registro=leerSiguienteRegistro;
+rama=registro.getRama;
+ciclo=registro.getCiclo;
+curso=registro.getCurso;
+
+while (finFichero == false){
+
+	do { //itera por ciclo
+		do{ //itera por curso
+			do{ //itera por alumno
+			
+				//Actualiza por alumno de un mismo curso
+				if (registro.getNota>=maxCurso) then maxCurso=registro.getNota;
+				if (registro.getNota<=minCurso) then minCurso=registro.getNota;
+				
+				registro=leerSiguienteRegistro;
+				
+			}while(curso==registro.getCurso);
+			
+			Imprimir "La nota maxima para el curso "+curso+" del ciclo "+ciclo+" de la rama "+rama+" ha sido "+maxCurso;
+			Imprimir "La nota minima para el curso "+curso+" del ciclo "+ciclo+" de la rama "+rama+" ha sido "+minCurso;
+			
+			//Actualiza por curso de un mismo ciclo
+			if (maxCurso>=maxCiclo) then maxCiclo=maxCurso;
+			if (minCurso<=minCiclo) then minCiclo=minCurso;
+			
+			//Resetea para el siguiente curso
+			maxCurso=0,
+			minCurso=10,
+			curso=registro.getCurso;
+			
+		}while(ciclo==registro.getCiclo;)
+			
+		Imprimir "La nota maxima para el ciclo "+ciclo+" de la rama "+rama+" ha sido "+maxCurso;
+		Imprimir "La nota minima para el ciclo "+ciclo+" de la rama "+rama+" ha sido "+minCurso;
+		
+		//Actualiza por ciiclo de una misma rama
+		if (maxCiclo>=maxRama) then maxRama=maxCiclo;
+		if (minCiclo<=minRama) then minRama=minCiclo;
+		
+		//Resetear
+		maxCiclo=0,
+		minCiclo=10,
+		ciclo=registro.getCiclo;
+		
+		
+	}while(rama==registro.getRama);
+	
+	Imprimir "La nota maxima para la rama "+rama+" ha sido "+maxCurso;
+	Imprimir "La nota minima para la rama "+rama+" ha sido "+minCurso;
+
+	//Actualiza por rama
+	if (maxCiclo>=maxRama) then maxRama=maxCiclo;
+	if (minCiclo<=minRama) then minRama=minCiclo;
+	
+	rama=registro.getRama;
+	
+	if (registro==null) then finFichero=true;
+}
