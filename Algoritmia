@@ -23,7 +23,7 @@ while (finFichero == false){
 	sumaNotas=0;
 	contador=0;
 	rama=registro.getRama;
-		if (registro==null) then finFichero=true;
+	if (registro==null) then finFichero=true;
 }
 
 
@@ -173,6 +173,54 @@ while (finFichero == false){
 	if (minCiclo<=minRama) then minRama=minCiclo;
 	
 	rama=registro.getRama;
+
+	
+	//Resetear
+	maxRama=0,
+	minRama=10,
+	rama=registro.getRama;
 	
 	if (registro==null) then finFichero=true;
 }
+
+//5 Total de suspensos y aprobados por rama
+//Asumiendo de nuevo que esta ordenado por rama
+
+declarar
+int numSus=0
+int numApr=0
+
+abrir fichero
+registroI = fichero.leerFila
+registroF = fichero.leerFila
+while registro !nulo
+	do
+		if registroF.leerNota>=5
+			numApr++
+		else
+			numSus++
+		registroF=fichero.leerFila
+	while registroI.getRama==registroF.getRama
+	Imprimir: "Total de "+numSus+" suspensos y"+numApr+" aprobados en la rama "+registroI.getRama
+	registroI=registroF
+
+//5 Total de suspensos y aprobados por ciclo
+//Asumiendo que esta ordenado por rama y por ciclo
+
+declarar
+int numSus=0
+int numApr=0
+
+abrir fichero
+registroI = fichero.leerFila
+registroF = fichero.leerFila
+while registro !nulo
+	do
+		if registroF.leerNota>=5
+			numApr++
+		else
+			numSus++
+		registroF=fichero.leerFila
+	while registroI.getCiclo==registroF.getCiclo
+	Imprimir: "Total de "+numSus+" suspensos y"+numApr+" aprobados en el ciclo "+registroI.getCiclo
+	registroI=registroF
