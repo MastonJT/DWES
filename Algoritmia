@@ -204,7 +204,7 @@ while registro !nulo
 	Imprimir: "Total de "+numSus+" suspensos y"+numApr+" aprobados en la rama "+registroI.getRama
 	registroI=registroF
 
-//5 Total de suspensos y aprobados por ciclo
+//6 Total de suspensos y aprobados por ciclo
 //Asumiendo que esta ordenado por rama y por ciclo
 
 declarar
@@ -224,3 +224,52 @@ while registro !nulo
 	while registroI.getCiclo==registroF.getCiclo
 	Imprimir: "Total de "+numSus+" suspensos y"+numApr+" aprobados en el ciclo "+registroI.getCiclo
 	registroI=registroF
+
+//7 Total de suspensos y aprobados por curso
+// Asumiendo que los registros estan ordenados por rama, ciclo y curso
+
+declarar
+int numSus=0
+int numApr=0
+
+abrir fichero
+registroI = fichero.leerFila
+registroF = fichero.leerFila
+while registro !nulo
+	do
+		if registroF.leerNota>=5
+			numApr++
+		else
+			numSus++
+		registroF=fichero.leerFila
+	while registroI.getCurso==registroF.getCurso
+	Imprimir: "Total de "+numSus+" suspensos y"+numApr+" aprobados en el curso "+registroI.getCurso
+	registroI=registroF
+
+//8 nota media del centro educativo
+
+declarar
+double suma=0;
+int contador=0;
+
+abrir fichero
+registro = fichero.leerFila;
+while registro != nulo
+	contador++;
+	suma+=registro.getNota;
+Imprimir "nota media del centro de: "+(suma/contador);
+
+//9 total de suspensos y aprobados
+
+delcarar
+int apr=0;
+int sus=0;
+
+abrir fichero;
+registro = fichero.leerFila;
+while registro!=nulo
+	if registro.getNota>=5
+		apr++;
+	else
+		sus++;
+Imprimir "total de "+apr+" aprobados y "+sus+" suspensos.";
