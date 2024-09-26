@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #cuadro {
+            background-color: lightgray;
+            border: 1px solid black;
+            padding: 1rem;
+        }
+
+        #entradas {
+            position: relative;
+            width: 20rem;
+            height: 5rem;
+            padding: 1rem;
+        }
+
+        .textI  nput {
+            float: right;
+            margin: 0 1rem 0 1rem;
+        }
+
+        .linea{
+            position: relative;
+            display: flex;
+        }
+
+        label{
+            width:30rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cuadro">
+        <h1>SUCESIONES ARITMÉTICAS 1 (FORMULARIO)</h1>
+        <p>Escriba los valores y le mostraré los términos de la sucesión aritmética correspondiente.</p>
+        <form action="ej5.php" method="post">
+            <div id="entradas">
+                <div class="linea">
+                    <label for="valorInicial">Valor inicial:</label>
+                    <input class="textInput" type="text" name="valorInicial" id="valorInicial">
+                </div>
+                <div class="linea">
+                    <label for="incremento">Incremento:</label>
+                    <input class="textInput" type="text" name="incremento" id="incremento">
+                </div>
+                <div class="linea">
+                    <label for="numeroValores">Número de valores:</label>
+                    <input class="textInput" type="text" name="numeroValores" id="numeroValores">
+                </div>
+            </div>
+            <input type="submit" value="Mostrar">
+            <input type="button" value="Borrar">
+        </form>
+    </div>
+</body>
+
+</html>
