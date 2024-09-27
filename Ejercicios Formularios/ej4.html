@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="ej4.php" method="post">
+        <p>Inserte la cantidad de euros y elija el tipo de conversion.</p>
+        <label for="inputCantidad">Cantidad: </label>
+        <input type="number" name="cantidad" id="inputCantidad" min="0" max="1000000">
+        <br>
+        <label for="dolar">Dolar: </label>
+        <input type="radio" name="divisa" id="dolar" value="0">
+        <label for="peso">Peso: </label>
+        <input type="radio" name="divisa" id="peso" value="1">
+        <label for="yen">Yen: </label>
+        <input type="radio" name="divisa" id="yen" value="2">
+        <label for="peseta">Peseta: </label>
+        <input type="radio" name="divisa" id="peseta" value="3">
+        <br>
+        <button type="submit">Calcular</button>
+    </form>
+</body>
+</html>
