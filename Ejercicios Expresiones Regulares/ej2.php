@@ -7,7 +7,7 @@
     $cond5='/^([[:digit:]]{2}[\/]){2}[[:digit:]]{4}$/';
     $cond6='/^[[:digit:]]+([.,][[:digit:]]{1,2})?$/';
     $cond7='/^[+-][[:digit:]]+([.,][[:digit:]]+)?$/';
-    $cond8='/^[a-zñáéíóú0-9*+.-_,]{6,}$/i';
+    $cond8='/^[a-zñáéíóú0-9*\+\.\-\_\,]{6,}$/i';
     if (preg_match($cond1,$texto)) {
         print "La cadena $texto es una o más letras sueltas separadas por espacios<br/>";
     } else {
