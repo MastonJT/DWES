@@ -57,12 +57,13 @@
         else 
             $texto.="<p>Su opinión: {$_REQUEST['opinion']}</p>";
         print $texto;
-    }
-     else 
+    ?>
+        <p>Los datos son correctos: <a href="ej71.php" >Enviar</a></p>
+        <p>Los datos son incorrectos: <a href="ej7.php">Enviar</a></p>
+    <?php
+    }else 
         imprimirPaginaInicial();
     
-    
-
     function imprimirPaginaInicial(){
     ?>
     <!DOCTYPE html>
