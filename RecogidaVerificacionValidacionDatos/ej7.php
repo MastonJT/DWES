@@ -1,9 +1,66 @@
 <?php
     if (isset($_REQUEST['enviar'])) {
-        # code...
-    } else {
-        imprimirPaginaInicial();
+        //verificaciones
+        $texto="";
+        if ($_REQUEST['nombre']=="") 
+            $texto.="<p style=\"color: red;\">Campo nombre esta vacío.</p>";
+        elseif (!preg_match('/^[a-zñáéíóú\s\-]+$/i',$_REQUEST['nombre'])) 
+            $texto.="<p style=\"color: red;\">Campo nombre contiene caractéres inválidos.</p>";
+        else 
+            $texto.="<p>Su nombre es {$_REQUEST['nombre']}</p>";
+        
+        if ($_REQUEST['apellidos']=="") 
+            $texto.="<p style=\"color: red;\">Campo apellidos esta vacío.";
+        elseif (!preg_match('/^[a-zñáéíóú\s\-]+$/i',$_REQUEST['apellidos'])) 
+            $texto.="<p style=\"color: red;\">Campo apellidos contiene caractéres inválidos.</p>";
+        else 
+            $texto.="<p>Sus apellidos son {$_REQUEST['apellidos']}</p>";
+        
+        if ($_REQUEST['email']=="") 
+            $texto.="<p style=\"color: red;\">Campo email esta vacío.</p>";
+        elseif (!preg_match('/^[a-z0-9\.\_]+[@][a-z0-9\.\_]+[\.][a-z]+$/i',$_REQUEST['email'])) 
+            $texto.="<p style=\"color: red;\">Campo email tiene formato inválido.</p>";
+        else 
+            $texto.="<p>Su email es {$_REQUEST['email']}</p>";
+        
+        if ($_REQUEST['contraseña']=="") 
+            $texto.="<p style=\"color: red;\">Campo contraseña esta vacío.</p>";
+        else 
+            $texto.="<p>Su contraseña es {$_REQUEST['contraseña']}</p>";
+        
+        if (!isset($_REQUEST['sexo'])) 
+            $texto.="<p style=\"color: red;\">Sexo no especificado.</p>";
+        else 
+            $texto.="<p>Su sexo es {$_REQUEST['sexo']}</p>";
+        
+        if(!isset($_REQUEST['estudios']))
+            $texto.="<p style=\"color: red;\">Estudios no especificado.</p>";
+        else 
+            $texto.="<p>Sus estudios son {$_REQUEST['estudios']}</p>";
+        
+        if ($_REQUEST['dia']==-1) 
+            $texto.="<p style=\"color: red;\">Dia recibiemiento no especificado.</p>";
+        else 
+            $texto.="<p>Dia recibimiento especificado: {$_REQUEST['dia']}</p>";
+        
+        if (!isset($_REQUEST['checkbox'])) 
+            $texto.="<p>Ninguna preferencia seleccionada.</p>";
+        else {
+            $texto.="<p>Las preferencias son: ";
+            foreach ($_REQUEST['checkbox'] as $valor) 
+                if (isset($valor)) 
+                    $texto.=$valor.", ";
+            $texto.="</p>";
+        }
+        if ($_REQUEST['opinion']=="") 
+            $texto.="<p style=\"color: red;\">Opinion inexistente.</p>";
+        else 
+            $texto.="<p>Su opinión: {$_REQUEST['opinion']}</p>";
+        print $texto;
     }
+     else 
+        imprimirPaginaInicial();
+    
     
 
     function imprimirPaginaInicial(){
@@ -21,14 +78,14 @@
         </style>
     </head>
     <body>
-        <form action="ej7.php">
+        <form action="ej7.php" method="POST">
             <div>
                 <label for="1">Nombre</label>
                 <input type="text" name="nombre" id="1">
                 <label for="2">Apellidos</label>
                 <input type="text" name="apellidos" id="2">
                 <label for="3">Email</label>
-                <input type="email" name="email" id="3">
+                <input type="text" name="email" id="3">
                 <label for="4">Contraseña</label>
                 <input type="password" name="contraseña" id="4">
             </div>
@@ -70,28 +127,45 @@
                 <div style="display:flex; flex-direction:column;">
                     <p>Interesado en los siguientes temas</p>
                     <div class="contenedorRow">
-                        <input type="checkbox" name="Musica" id="12">
+                        <input type="checkbox" name="checkbox[]" id="12" value="Musica">
                         <label for="12">Musica</label>
                     </div>
                     <div class="contenedorRow">
-                        <input type="checkbox" name="Deporte" id="13">
+                        <input type="checkbox" name="checkbox[]" id="13" value="Deporte">
                         <label for="13">Deporte</label>
                     </div>
                     <div class="contenedorRow">
-                        <input type="checkbox" name="Cine" id="14">
+                        <input type="checkbox" name="checkbox[]" id="14" value="Cine">
                         <label for="14">Cine</label>
                     </div>
                     <div class="contenedorRow">
-                        <input type="checkbox" name="Libros" id="15">
+                        <input type="checkbox" name="checkbox[]" id="15" value="Libros">
                         <label for="15">Libros</label>
                     </div>
                     <div class="contenedorRow">
-                        <input type="checkbox" name="Ciencia" id="16">
+                        <input type="checkbox" name="checkbox[]" id="16" value="Ciencia">
                         <label for="16">Ciencia</label>
                     </div>
                 </div>
             </div>
-            <input type="submit" value="Enviar">
+            <div>
+                <label for="diaSemana">Dia de la semana que le interesa recibirlo</label>
+                <select name="dia" id="diaSemana">
+                    <option value="-1">...</option>
+                    <option value="Lunes">Lunes</option>
+                    <option value="Martes">Martes</option>
+                    <option value="Miercoles">Miércoles</option>
+                    <option value="Jueves">Jueves</option>
+                    <option value="Viernes">Viernes</option>
+                    <option value="Sabado">Sábado</option>
+                    <option value="Domingo">Domingo</option>
+                </select>
+            </div>
+            <div>
+                <label for="Opinion">Su opinión</label>
+                <textarea name="opinion" id="Opinion" placeholder="Comentario:..."></textarea>
+            </div>
+            <input type="submit" value="Enviar" name="enviar">
             <input type="reset" value="Resetear">
         </form>
 
