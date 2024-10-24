@@ -1,5 +1,5 @@
 <?php
-if (isset($_REQUEST['enviar'])) {
+if (isset($_REQUEST['enviar'])&&isset($_FILES['fichero'])) {
     //sanear cosas
     $nombre=sanear($_REQUEST['nombre']);
     $apellido=sanear($_REQUEST['apellido']);
@@ -58,17 +58,34 @@ if (isset($_REQUEST['enviar'])) {
             $mensajeErr.="<p style=\"color:green;\">Campo email:{$email}</p>";break;
     }
     //manejo del fichero
-    switch (true) {
-        case !isset($_FILES['fichero']['name']):
-            $mensajeErr.="<p style=\"color:red;\">No se ha seleccionado ningun archivo.</p>";break;
-        case $_FILES['fichero']['size']>20000000:
-            $mensajeErr.="<p style=\"color:red;\">Se ha superado el tamaño máximo del archivo.</p>";break;
-        case $_FILES['fichero']['size']>20000000:
-            $mensajeErr.="<p style=\"color:red;\">Se ha superado el tamaño máximo del archivo.</p>";break;
-        default:
-            # code...
-            break;
+    if (is_uploaded_file($_FILES['fichero']['tmp_name'])) {//compruebva si se ha subido
+        $ficheroNombre=pathinfo($_FILES['fichero']['name']);//guarda varios nombres en un array asociativo
+        $regex="/^(png|jpg)$/";
+        if (preg_match($regex,$ficheroNombre['extension'])) {//validacao da extencao
+            $nombreCompleto='imagenes/'.$ficheroNombre['basename'];//genero una cadena que sirve de direccion
+            if (is_file($nombreCompleto)) {//si existe un fichero con el mismo nombre en la carpeta, se añade un identificador unico
+                $nombreCompleto='imagenes/'.time().$ficheroNombre['basename'];
+            }
+            move_uploaded_file($_FILES['fichero']['tmp_name'],$nombreCompleto);//agarra el fichero y lo muevo y lo guarda en el directorio
+            $mensajeErr.="Fichero subido correctamente.";
+            $mensajeErr.="<img src='$nombreCompleto'/>";
+        }else {
+            print 'Extension invalida';
+        }
+        
+    } else {
+        switch ($_FILES['fichero']['tmp_name']) {//codigos de error
+            case 1:print 'Error de tamano maximo en php.ini';break;
+            case 2:print 'Error de tamano por max file';break;
+            case 3:print 'Subido parcialmente';break;
+            case 4:print 'No se ha subido el fichero, no ha llegado a subirse';break;
+            case 6:print 'Sin carpeta temporal';break;
+            case 7:print 'No se puede escribir';break;
+            case 8:print 'Extension php detenida por la subida';break;
+            default:print 'No se ha subido el fichero';break;
+        }
     }
+    print($mensajeErr);
 } else {
     imprimirFormulario();
 }
@@ -99,8 +116,10 @@ function imprimirFormulario(){
         <label for="ema">Email:</label>
         <input type="text" name="email" id="ema"><br/>
         <label for="file">Adjuntar fichero</label>
-        <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $max_file_size=200; ?>" />
-        <input type="file" name="fichero" id="file"></form>    
+        <!-- <input type="hidden" name="MAX_FILE_SIZE" value="<?php// echo $max_file_size=200; ?>" /> -->
+        <input type="file" name="fichero" id="file">
+        <input type="submit" value="Enviar" name="enviar">
+    </form>    
     </body>
     </html>
     <?php
