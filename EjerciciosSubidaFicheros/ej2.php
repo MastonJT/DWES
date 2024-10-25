@@ -34,12 +34,13 @@
                 //verificar si hay algun fichero con el mismo
                 if (is_file($directorio)) {
                     //si existe generar nombre unico
-                    $directorio='imagenes/'.time()."-".$nombreArchivo['basename'];
+                    $directorio='imagenes/'.time()."-".$nombresArchivo['basename'];
                 }
                 //guardar el archivo en el directorio
                 move_uploaded_file($_FILES['imagen']['tmp_name'],$directorio);
                 $mensajeErr.="Fichero subido con exito";
                 $mensajeErr.="<img src='$directorio'/>";
+                echo($mensajeErr);
             }else {
                 $mensajeErr.="Extension invalida";
             }
