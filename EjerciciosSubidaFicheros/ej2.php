@@ -5,23 +5,23 @@
         $mensajeErr="";
         $nombre=sanear($_REQUEST['nombre']);
         if ($_REQUEST['nombre']=="") {
-            $mensajeErr.="Campo esta vacio.";
-        }elseif (preg_match('/^[a-zñàèìòù]+([\s-][a-zñàèìòù]+)*$/',$nombre)) {
-            $mensajeErr.="campo nombre contiene caracteres invalidos";
+            $mensajeErr.="<br/>Campo nombre esta vacio.";
+        }elseif (!preg_match('/^[a-zñàèìòù]+([\s-][a-zñàèìòù]+)*$/',$nombre)) {
+            $mensajeErr.="<br/>campo nombre contiene caracteres invalidos";
         }else{
-            $mensajeErr.="Nombre del titular: {$mensajeErr}";
+            $mensajeErr.="<br/>Nombre del titular: {$nombre}";
         }
         //sanear validar texto
         $texto=sanear($_REQUEST['texto']);
         if ($texto=="") {
-            $mensajeErr.="Campo texto esta vacio";
+            $mensajeErr.="<br/>Campo texto esta vacio";
         }else {
-            $mensajeErr.="Texto: {$texto}";
+            $mensajeErr.="<br/>Texto: {$texto}";
         }
         //sanear validar categoria
         $categoria=sanear($_REQUEST['categorias']);
         if (isset($_REQUEST['categorias'])) {
-            $mensajeErr.="Categoriaes {$_REQUEST['categorias']}";
+            $mensajeErr.="<br/>Categoriaes {$_REQUEST['categorias']}";
         }
         //validar archivo
         
@@ -38,11 +38,11 @@
                 }
                 //guardar el archivo en el directorio
                 move_uploaded_file($_FILES['imagen']['tmp_name'],$directorio);
-                $mensajeErr.="Fichero subido con exito";
-                $mensajeErr.="<img src='$directorio'/>";
+                $mensajeErr.="<br/>Fichero subido con exito";
+                $mensajeErr.="<br/><img src='$directorio'/>";
                 echo($mensajeErr);
             }else {
-                $mensajeErr.="Extension invalida";
+                $mensajeErr.="<br/>Extension invalida";
             }
         }else {
             switch ($_FILES['imagen']['error']) {//codigos de error

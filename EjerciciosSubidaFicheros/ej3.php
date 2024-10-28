@@ -1,0 +1,103 @@
+<?php
+    //verificacion envio del formulario
+    if (isset($_REQUEST['enviar'])) {
+        //validar tipo de vivienda
+        $mensaje="";
+        $tipoVivienda=sanear($_REQUEST['vivienda']);
+        $mensaje.="<p>Vivienda {$tipoVivienda}</p>";
+        //validar zona
+        $zona=sanear($_REQUEST['zona']);
+        $mensaje.="<p>Zona {$zona}</p>";
+        //validar direccion
+        $regex='/^[a-zñàèìòù\s\-0-9]+$/';
+        $direccion=sanear($_REQUEST['direccion']);
+        if (!preg_match($regex,$direccion)) {
+            $mensaje.="<p style='color: red;'>La direccion contiene caracteres invalidos.</p>";
+        }elseif ($direccion=="") {
+            $mensaje.="<p style='color: red;'>La direccion esta en blanco.</p>";
+        } else{
+            $mensaje.="<p>Direccion: {$direccion}</p>";
+        }
+        //validar numero dormitorios
+        if (isset($_REQUEST['numDormitorios'])) {
+            $dormitorios=sanear($_REQUEST['numDormitorios']);
+            $mensaje.="<p>Numero de dormitorios: {$dormitorios}</p>";
+        }else {
+            $mensaje.="<p style='color: red;'>Error al seleccionar el numero de dormitorios.</p>";
+        }
+        //validar precio
+        
+    }else {
+        enviarFormulario();
+    }
+    function sanear($datos){
+        return htmlspecialchars(trim(strip($datos)),ENT_QUOTES,"UTF-8");
+    }
+    function enviarFormulario(){
+?>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Document</title>
+        </head>
+        <body>
+            <form action="ej3.php" method="post" enctype="multipart/form-data">
+                <h3>Introduzca los datos de la vivienda.</h3>
+                <label for="inputTipoDeVivienda">Tipo de vivienda:</label>
+                <select name="vivienda" id="inputTipoDeVivienda">
+                    <option>Casa</option>
+                    <option>Piso</option>
+                    <option>Palacio</option>
+                </select>
+                <br>
+                <label for="inputZona">Zona:</label>
+                <select name="zona" id="inputZona">
+                    <option>Centro</option>
+                    <option>Afueras</option>
+                    <option>Fuenlabrada</option>
+                </select>
+                <br>
+                <label for="inputDireccion">Direccion: </label>
+                <input type="text" name="direccion" id="inputDireccion">
+                <br>
+                <label>Numero de dormitorios: </label>
+                <label for="1dorm">1</label>
+                <input type="radio" name="numDormitorios" id="1dorm" value='1'>
+                <label for="1dorm">2</label>
+                <input type="radio" name="numDormitorios" id="2dorm" value='2'>
+                <label for="1dorm">3</label>
+                <input type="radio" name="numDormitorios" id="3dorm" value='3'>
+                <label for="1dorm">4</label>
+                <input type="radio" name="numDormitorios" id="4dorm" value='4'>
+                <label for="1dorm">5</label>
+                <input type="radio" name="numDormitorios" id="5dorm" value='5'>
+                <br>
+                <label for="inputPrecio">Precio: </label>
+                <input type="text" name="precio" id="inputPrecio">
+                <label for="inputPrecio">$</label>
+                <br>
+                <label for="inputTamano">Tamano: </label>
+                <input type="text" name="tamano" id="inputTamano">
+                <label for="inputTamano">m3</label>
+                <br>
+                <label>Extras (marque los que procedan)</label>
+                <input type="checkbox" name="extras" id="piscina" value="piscina">
+                <label for="piscina">Piscina</label>
+                <input type="checkbox" name="extras" id="jardin" value="jardin">
+                <label for="jardin">Jardin</label>
+                <input type="checkbox" name="extras" id="garaje" value="garaje">
+                <label for="garaje">Garaje</label>
+                <br>
+                <label for="inputFoto">Foto: </label>
+                <input type="file" name="foto" id="inputFoto">
+                <br>
+                <label for="inputObservaciones">Observaciones: </label>
+                <textarea name="observaciones" id="inputObservaciones"></textarea>
+            </form>
+        </body>
+        </html>
+<?php
+    }
+?>
