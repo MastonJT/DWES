@@ -1,6 +1,6 @@
 <?php
 //verificacion envio del formulario
-if (isset($_REQUEST['enviar'])&&isset($_FILES['foto'])) {
+if (isset($_REQUEST['enviar'])) {
     //validar tipo de vivienda
     $mensaje = "";
     $tipoVivienda = sanear($_REQUEST['vivienda']);
@@ -46,47 +46,45 @@ if (isset($_REQUEST['enviar'])&&isset($_FILES['foto'])) {
         $mensaje .= "<p>tamano: {$tamano}</p>";
     }
     //validar extras
-    $extras=[];
-    foreach ($_REQUEST['extras'] as $extra => $value) {
-        array_push($extras,sanear($value));
-    }
-    if (isset($extras)) {
-        $mensaje .= "<p>Extras elegidos: {$extras}</p>";
-    }else {
+    if (!isset($_REQUEST['extras'])) {
         $mensaje .= "<p>Ningun extra elegido.</p>";
+    }else {
+        $mensaje .= "<p>Extras elegidos: {$REQUEST['extras']}</p>";
     }
     //validar foto
-    if (is_uploaded_file($_FILES['imagen'])) {//comprobar si se ha subido
-    //guardar nombres
-    $nombresArchivo=pathinfo($_FILES['foto']['name']);
-    //validar extension
-    $regexTipo='/^(png|jpg|jpeg)$/i';
-    if (preg_match($regexTipo,$nombresArchivo['extension'])) {
-        //proceder a guardar en un directorio
-        $directorio='imagenes/'.$nombresArchivo['basename'];
-        //verficar que el directorio esta libre
-        if (is_file($directorio)) {
-            //crear directorio unico
-            $directorio='imagenes/'.time().$nombresArchivo['basename'];
+
+    $error=$_FILES['foto']['error'];
+    switch ($error) {
+        case 1:print("Error de tamano maximo en php.ini");break;
+        case 2:print("Error de tamano por max file");break;
+        case 3:print("Subido parcialmente");break;
+        case 4:print("No se ha subido el fichero, no ha llegado a subirse");break;
+        case 6:print("Sin carpeta temporal");break;
+        case 7:print("No se puede escribir");break;
+        case 8:print("Extension php detenida por la subida");break;
+        default:
+            //guardar nombre
+            $nombresArchivo=pathinfo($_FILES['foto']['name']);
+            //validar extension
+            $regexTipo='/^(png|jpg|jpeg)$/i';
+            if (preg_match($regexTipo,$nombresArchivo['extension'])) {
+                //proceder a guardar en un directorio
+                $directorio='imagenes/'.$nombresArchivo['basename'];
+                //verficar que el directorio esta libre
+                if (is_file($directorio)) {
+                    //crear directorio unico
+                    $directorio='imagenes/'.time().$nombresArchivo['basename'];
+                }
+                //guardar el archivo en el directorio y verificar que se haya subido correctamente
+                if (move_uploaded_file($_FILES['foto']['tmp_name'],$directorio)) {
+                    $mensaje .= "<p>Archivo subido y guardado con exito.</p>";
+                    $mensaje .= "<img src='{$directorio}'/>";
+                }else {
+                    $mensaje .= "<p style='color: red;'>Hubo un error al guardar el archivo.</p>";
+                }
+            }
+            break;
         }
-        //guardar el archivo en el directorio
-        move_uploaded_file($_FILES['foto']['tmp_name'],$directorio);
-        $mensaje .= "<p>Archivo subido y guardado con exito.</p>";
-        $mensaje .= "<img src='{$directorio}'/>";
-    }
-    }else {
-        $error=$_FILES['imagen']['error'];
-        switch ($error) {
-            case 1:print("Error de tamano maximo en php.ini");break;
-            case 2:print("Error de tamano por max file");break;
-            case 3:print("Subido parcialmente");break;
-            case 4:print("No se ha subido el fichero, no ha llegado a subirse");break;
-            case 6:print("Sin carpeta temporal");break;
-            case 7:print("No se puede escribir");break;
-            case 8:print("Extension php detenida por la subida");break;
-            default:print("No se ha subido el archivo");break;
-        }
-    }
     echo($mensaje);
 } else {
     enviarFormulario();
