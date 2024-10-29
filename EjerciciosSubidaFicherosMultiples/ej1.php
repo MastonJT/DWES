@@ -32,42 +32,51 @@ if (isset($_REQUEST['enviar'])) {
         $mensaje.="<p>direccion: {$direccion}</p>";
     }
     //validar fotos
-    foreach ($_FILES['archivos'] as $indice => $fichero) {
-        switch ($fichero['error']) {
-            case 1:$mensaje.="<p style='color:red;'>Error del tamano maximo en php.ini.</p>";break;
-            case 2:$mensaje.="<p style='color:red;'>Error del tamano por max file.</p>";break;
-            case 3:$mensaje.="<p style='color:red;'>Error subido parcialmente.</p>";break;
-            case 4:$mensaje.="<p style='color:red;'>No se ha subido el fichero.</p>";break;
-            case 6:$mensaje.="<p style='color:red;'>Sin carpeta temporal.</p>";break;
-            case 7:$mensaje.="<p style='color:red;'>No se puede escribir.</p>";break;
-            case 8:$mensaje.="<p style='color:red;'>Extension php detenida por la subida.</p>";break;
-            default:
-            //no hay error
-            //guardar los nombres del fichero
-            $nombresArchivo=pathinfo($fichero['name']);
-            //valirdar extension
-            $regex='/^(jpg|png|jpeg)$/';
-            if (preg_match($regex,$nombresArchivo['extension'])) {
-                //extension valida procede a crear el directorio para guardar
-                $directorio='imagenes/'.$nombresArchivo['basename'];
-                //verificar que el directorio esta libre
-                if (is_file($directorio)) {
-                    //crear id unico
-                    $directorio='imagenes/'.time().$nombresArchivo['basename'];
-                }
-                //proceder a mover el archivo al directori fenitivio
-                if(move_uploaded_file($fichero['tmp_name'],$directorio)){
-                    $mensaje.="<p>Archivo: {$nombresArchivo['basename']} movido con exito</p>";
-                    $mensaje.="<img src='{$directorio}'/>";
+    if (isset($_FILES['archivos'])) {
+        for ($i=0;$i<count($_FILES['archivos']['tmp_name']);$i++) {
+            echo "<pre>";
+            print_r($_FILES['archivos']);
+            echo "</pre>";
+            switch ($_FILES['archivos']['error'][$i]) {
+                case 1:$mensaje.="<p style='color:red;'>Error del tamano maximo en php.ini.</p>";break;
+                case 2:$mensaje.="<p style='color:red;'>Error del tamano por max file.</p>";break;
+                case 3:$mensaje.="<p style='color:red;'>Error subido parcialmente.</p>";break;
+                case 4:$mensaje.="<p style='color:red;'>No se ha subido el archivo.</p>";break;
+                case 6:$mensaje.="<p style='color:red;'>Sin carpeta temporal.</p>";break;
+                case 7:$mensaje.="<p style='color:red;'>No se puede escribir.</p>";break;
+                case 8:$mensaje.="<p style='color:red;'>Extension php detenida por la subida.</p>";break;
+                case 0:
+                //no hay error
+                //guardar los nombres del archivo
+                $nombresArchivo=pathinfo($_FILES['archivos']['name'][$i]);
+                //valirdar extension
+                $regex='/^(jpg|png|jpeg)$/i';
+                if (preg_match($regex,$nombresArchivo['extension'])) {
+                    //extension valida procede a crear el directorio para guardar
+                    $directorio='imagenes/'.$nombresArchivo['basename'];
+                    //verificar que el directorio esta libre
+                    if (is_file($directorio)) {
+                        //crear id unico
+                        $directorio='imagenes/'.time().$nombresArchivo['basename'];
+                    }
+                    //proceder a mover el archivo al directori fenitivio
+                    if(move_uploaded_file($_FILES['archivos']['tmp_name'][$i],$directorio)){
+                        $mensaje.="<p>Archivo: {$nombresArchivo['basename']} movido con exito</p>";
+                        $mensaje.="<img src='{$directorio}'/>";
+                    }else {
+                        $mensaje.="<p style='color:red;'>Hubo un error al guardar el archivo.</p>";
+                    }
                 }else {
-                    $mensaje.="<p style='color:red;'>Hubo un error al guardar el archivo.</p>";
+                    $mensaje.="<p style='color:red;'>Extension de archivo invalida.</p>";
                 }
-            }else {
-                $mensaje.="<p style='color:red;'>Extension de archivo invalida.</p>";
+                break;
+                default:$mensaje.="<p style='color:red;'>No se ha seleccionado ningun fichero.</p>";break;
             }
-            break;
         }
+    }else {
+        $mensaje.="<p style='color:red;'>No se ha subido el fichero.</p>";
     }
+    echo($mensaje);
 } else {enviarFormulario();}
 
 function sanear($parametro) {
