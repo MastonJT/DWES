@@ -3,15 +3,19 @@ $archivo = 'contador.txt';
 
 // Leer contador actual
 if (file_exists($archivo)) {
-    $cuenta = file_get_contents($archivo);
-} else {
+    $flujoLectura=fopen($archivo,"r") or die("No se pudo leer el fichero");
+    $cuenta = fread($flujoLectura,filesize($archivo));
+    fclose($flujoLectura);
+} else {//Sino inicializar a 0
     $cuenta = 0;
 }
-$cuentaNueva = intval($cuenta) + 1;
+//actualizar cuenta
+$cuenta = intval($cuenta) + 1;
 
-//guardar valor nuevo, si no exite se crea y se guarda
-file_put_contents($archivo, $cuentaNueva);
+//proceso de escritura
+$flujoEscritura=fopen($archivo,"w");
+fwrite($flujoEscritura,$cuenta);
 
-// Display the current count
-echo "Contador: " . $cuentaNueva;
+//Mostrar la cuenta actual
+echo "Contador: " . $cuenta;
 ?>
