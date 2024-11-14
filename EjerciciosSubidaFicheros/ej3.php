@@ -26,66 +26,80 @@ if (isset($_REQUEST['enviar'])) {
         $mensaje .= "<p style='color: red;'>Error al seleccionar el numero de dormitorios.</p>";
     }
     //validar precio
-    $precio=sanear($_REQUEST['precio']);
-    $regex='/^[0-9]+([,.][0-9]{2})*$/';
-    if ($precio=="") {
+    $precio = sanear($_REQUEST['precio']);
+    $regex = '/^[0-9]+([,.][0-9]{2})*$/';
+    if ($precio == "") {
         $mensaje .= "<p style='color: red;'>Campo precio esta vacio.</p>";
-    }elseif (!preg_match($regex,$precio)) {
+    } elseif (!preg_match($regex, $precio)) {
         $mensaje .= "<p style='color: red;'>Campo precio contiene caracteres invalidos.</p>";
-    }else{
+    } else {
         $mensaje .= "<p>Precio: {$precio}</p>";
     }
     //validar tamano
-    $tamano=sanear($_REQUEST['tamano']);
-    $regex='/^[0-9]+([,.][0-9]{2})*$/';
-    if ($tamano=="") {
+    $tamano = sanear($_REQUEST['tamano']);
+    $regex = '/^[0-9]+([,.][0-9]{2})*$/';
+    if ($tamano == "") {
         $mensaje .= "<p style='color: red;'>Campo tamano esta vacio.</p>";
-    }elseif (!preg_match($regex,$tamano)) {
+    } elseif (!preg_match($regex, $tamano)) {
         $mensaje .= "<p style='color: red;'>Campo tamano contiene caracteres invalidos.</p>";
-    }else{
+    } else {
         $mensaje .= "<p>tamano: {$tamano}</p>";
     }
     //validar extras
     if (!isset($_REQUEST['extras'])) {
         $mensaje .= "<p>Ningun extra elegido.</p>";
-    }else {
+    } else {
         $mensaje .= "<p>Extras elegidos: {$REQUEST['extras']}</p>";
     }
     //validar foto
 
-    $error=$_FILES['foto']['error'];
+    $error = $_FILES['foto']['error'];
     switch ($error) {
-        case 1:print("Error de tamano maximo en php.ini");break;
-        case 2:print("Error de tamano por max file");break;
-        case 3:print("Subido parcialmente");break;
-        case 4:print("No se ha subido el fichero, no ha llegado a subirse");break;
-        case 6:print("Sin carpeta temporal");break;
-        case 7:print("No se puede escribir");break;
-        case 8:print("Extension php detenida por la subida");break;
+        case 1:
+            print("Error de tamano maximo en php.ini");
+            break;
+        case 2:
+            print("Error de tamano por max file");
+            break;
+        case 3:
+            print("Subido parcialmente");
+            break;
+        case 4:
+            print("No se ha subido el fichero, no ha llegado a subirse");
+            break;
+        case 6:
+            print("Sin carpeta temporal");
+            break;
+        case 7:
+            print("No se puede escribir");
+            break;
+        case 8:
+            print("Extension php detenida por la subida");
+            break;
         default:
             //guardar nombre
-            $nombresArchivo=pathinfo($_FILES['foto']['name']);
+            $nombresArchivo = pathinfo($_FILES['foto']['name']);
             //validar extension
-            $regexTipo='/^(png|jpg|jpeg)$/i';
-            if (preg_match($regexTipo,$nombresArchivo['extension'])) {
+            $regexTipo = '/^(png|jpg|jpeg)$/i';
+            if (preg_match($regexTipo, $nombresArchivo['extension'])) {
                 //proceder a guardar en un directorio
-                $directorio='imagenes/'.$nombresArchivo['basename'];
+                $directorio = 'imagenes/' . $nombresArchivo['basename'];
                 //verficar que el directorio esta libre
                 if (is_file($directorio)) {
                     //crear directorio unico
-                    $directorio='imagenes/'.time().$nombresArchivo['basename'];
+                    $directorio = 'imagenes/' . time() . $nombresArchivo['basename'];
                 }
                 //guardar el archivo en el directorio y verificar que se haya subido correctamente
-                if (move_uploaded_file($_FILES['foto']['tmp_name'],$directorio)) {
+                if (move_uploaded_file($_FILES['foto']['tmp_name'], $directorio)) {
                     $mensaje .= "<p>Archivo subido y guardado con exito.</p>";
                     $mensaje .= "<img src='{$directorio}'/>";
-                }else {
+                } else {
                     $mensaje .= "<p style='color: red;'>Hubo un error al guardar el archivo.</p>";
                 }
             }
             break;
-        }
-    echo($mensaje);
+    }
+    echo ($mensaje);
 } else {
     enviarFormulario();
 }
