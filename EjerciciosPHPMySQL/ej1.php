@@ -1,6 +1,9 @@
 <?php
+include "funciones.php";
 $connection;
 $links;
+$RESULT;
+
 if (!isset($_GET['valor'])) {
     $links = "
         <a href='ej1.php?valor=conectar'>Conectar y crear la BDD y la tabla.</a>
@@ -10,15 +13,54 @@ if (!isset($_GET['valor'])) {
     $links = "
         <a href='ej1.php'>Volver a la pagina inicial.</a>";
     $connection = conectarBDD();
-    $conection->query('CREATE SCHEMA db1');
+    //CREAR BASE Y USAR
+    clg(unPQuery('DROP database IF EXISTS db1'));
+    clg(unPQuery('CREATE database db1'));
+    clg(unPQuery('USE db1'));
     //CREAR tabla
-    $qParam = '';
-    printMainPage();
+    clg(unPQuery("CREATE TABLE tabla1(
+        ID int primary key,
+        nombre varchar(100),
+        localidad varchar(100)
+        )"));
+    //insertar la tabla
+    clg(unPQuery("INSERT INTO tabla1 (ID, nombre, localidad) VALUES
+        (23, 'Jose', 'MOSTOLES'),
+        (24, 'jaime', 'MOSTOLES'),
+        (25, 'jesus', 'MOSTOLES'),
+        (26, 'geronimo', 'MOSTOLES'),
+        (27, 'JUAN', 'MOSTOLES'),
+        (28, 'MARIA', 'VILLAVICIOSA')"));
+    //QUERY A LA TABLA
+    $RESULT = pQuery('SELECT * FROM tabla1');
+    //mostrar pagina
+    printUpperPage();
+    print(createHTMLTableFromQuery($RESULT));
+    printLowerPage();
 } elseif (isset($_GET['valor']) && $_GET['valor'] == "borrar") {
+    $links = "<a href='ej1.php'>Volver a la pagina inicial.</a>";
+    $connection = conectarBDD();
+    clg(unPQuery('USE db1'));
+    printUpperPage();
+    $RESULT = pQuery('SELECT * FROM tabla1');
+    print(createInteractiveHTMLTableFromQuery($RESULT));
+    printLowerPage();
+} elseif (isset($_REQUEST['enviar'])) {
     $links = "
         <a href='ej1.php'>Volver a la pagina inicial.</a>";
-    printMainPage();
+    $connection = conectarBDD();
+    clg(unPQuery('USE db1'));
+    $elementosABorrar = $_REQUEST['borrables'];
+    foreach ($elementosABorrar as $elemento) {
+        clg(unPQuery("delete from tabla1 where ID={$elemento}"));
+    }
+    $RESULT = pQuery('SELECT * FROM tabla1');
+    printUpperPage();
+    print(createHTMLTableFromQuery($RESULT));
+    printLowerPage();
 }
+
+
 
 function conectarBDD()
 {
@@ -28,26 +70,6 @@ function conectarBDD()
         return $conection;
     } catch (PDOException $e) {
         print '<p>Se ha producido un error por \n' . $e->getMessage() . '</p>';
-    }
-}
-
-function unPQuery($string)
-{
-    global $connection;
-    if ($connection->query($string)) {
-        return "Querry existosa: " . $string;
-    } else {
-        return "Querry fallida: " . $string;
-    }
-}
-function pQuery($string)
-{
-    global $connection;
-    $query = $connection->query($string);
-    if ($query) {
-        return $query;
-    } else {
-        return "Querry fallida: " . $string;
     }
 }
 
@@ -66,6 +88,33 @@ function printMainPage()
     <body>
         <?php global $links;
         echo $links; ?>
+    </body>
+
+    </html>
+<?php
+}
+
+function printUpperPage()
+{
+?>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pagina principal</title>
+    </head>
+
+    <body>
+        <?php global $links;
+        echo $links; ?>
+    <?php
+}
+
+function printLowerPage()
+{
+    ?>
     </body>
 
     </html>
