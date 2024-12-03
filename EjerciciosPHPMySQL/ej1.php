@@ -67,16 +67,6 @@ if (isset($_SESSION['logIn'])) {
 }
 
 
-function conectarBDD()
-{
-    try {
-        $conection = new PDO("mysql:host=localhost:3306;charset=utf8", "root", "");
-        $conection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $conection;
-    } catch (PDOException $e) {
-        print '<p>Se ha producido un error por \n' . $e->getMessage() . '</p>';
-    }
-}
 
 function printMainPage()
 {
@@ -93,33 +83,6 @@ function printMainPage()
     <body>
         <?php global $links;
         echo $links; ?>
-    </body>
-
-    </html>
-<?php
-}
-
-function printUpperPage()
-{
-?>
-    <!DOCTYPE html>
-    <html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Pagina principal</title>
-    </head>
-
-    <body>
-        <?php global $links;
-        echo $links; ?>
-    <?php
-}
-
-function printLowerPage()
-{
-    ?>
     </body>
 
     </html>
