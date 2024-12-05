@@ -15,18 +15,38 @@ if (isset($_REQUEST['enviar'])) {
     $query = "USE agenda";
     $connection->query($query);
 
-    $query = "INSERT INTO peronas(nombre,apellidos,direccion,telefono) VALUES(:nombre,:apellidos,:direccion,:telefono)";
-    $queryInsercionPersona = $connection->prepare($query);
-    $queryInsercionPersona->bindValue(':nombre', $nombre);
-    $queryInsercionPersona->bindValue(':apellidos', $apellidos);
-    $queryInsercionPersona->bindValue(':direccion', $direccion);
-    $queryInsercionPersona->bindValue(':telefono', $telefono);
-
-    $resultado = $queryInsercionPersona->execute();
-    if ($resultado) {
-        $err = "Insercion realizada con exito";
+    //verificar si ya existe la persona
+    $query = "SELECT * FROM personas WHERE nombre = :nombre AND apellidos = :apellidos AND direccion = :direccion AND telefono = :telefono";
+    $queryVerfPersona = $connection->prepare($query);
+    conditionalBind($queryVerfPersona, $nombre, "nombre");
+    conditionalBind($queryVerfPersona, $apellidos, "apellidos");
+    conditionalBind($queryVerfPersona, $direccion, "direccion");
+    conditionalBind($queryVerfPersona, $telefono, "telefono");
+    if ($queryVerfPersona->execute()) {
+        clg("Verificacion exitosa de persona");
+        $row = $queryVerfPersona->fetch(PDO::FETCH_ASSOC);
+        if ($row == false) {
+            //SI NO HAY REGISTROS SE PROCEDE A INSERTAR
+            $query = "INSERT INTO personas(nombre,apellidos,direccion,telefono) VALUES(:nombre,:apellidos,:direccion,:telefono)";
+            $queryInsercionPersona = $connection->prepare($query);
+            try {
+                conditionalBind($queryInsercionPersona, $nombre, "nombre");
+                conditionalBind($queryInsercionPersona, $apellidos, "apellidos");
+                conditionalBind($queryInsercionPersona, $direccion, "direccion");
+                conditionalBind($queryInsercionPersona, $telefono, "telefono");
+                if ($queryInsercionPersona->execute()) {
+                    $err = "Insercion realizada con exito";
+                } else {
+                    $err = "Ejecucion fallida. Compruebe los datos.";
+                }
+            } catch (PDOException $e) {
+                $err = "Error " . $e->getMessage();
+            }
+        } else {
+            $err = "Ya existe el registro";
+        }
     } else {
-        $err = "Datos invalidos";
+        clg("No se pudo verificar la persona");
     }
 }
 

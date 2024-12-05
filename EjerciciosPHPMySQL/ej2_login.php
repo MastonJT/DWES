@@ -25,11 +25,11 @@ if (isset($_SESSION['logIn'])) {
         $connection->query($query);
 
         $query = "CREATE TABLE personas (" .
-            "id INT PRIMARY KEY AUNTO_INCREMENT," .
+            "id INT PRIMARY KEY AUTO_INCREMENT," .
             "nombre VARCHAR(15) NOT NULL," .
             "apellidos VARCHAR(25) NOT NULL," .
             "direccion CHAR(25) NOT NULL," .
-            "telefono INT(9) NOT NULL";
+            "telefono INT(9) NOT NULL)";
         $connection->query($query);
         sleep(2);
         header("location: ej2.php");

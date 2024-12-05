@@ -3,9 +3,9 @@
 // {
 //     global $connection;
 //     if ($connection->query($string)) {
-//         return "exito: " . str_replace(["\r\n", "\n", "\r"], '', $string);
+//         return "exito: " . str_replace(["\r\n", "\n", "\r"], "", $string);
 //     } else {
-//         return "fallida: " .  str_replace(["\r\n", "\n", "\r"], '', $string);
+//         return "fallida: " .  str_replace(["\r\n", "\n", "\r"], "", $string);
 //     }
 // }
 
@@ -16,7 +16,7 @@ function queryResult($string)
     if ($query) {
         return $query;
     } else {
-        return "fallida: " .  str_replace(["\r\n", "\n", "\r"], '', $string);
+        return "fallida: " .  str_replace(["\r\n", "\n", "\r"], "", $string);
     }
 }
 
@@ -30,9 +30,9 @@ function createHTMLTableFromQuery($queryResult)
     $table = "<table>";
     $table .= "<tr><td>ID</td><td>Nombre</td><td>Localidad</td></tr>";
     foreach ($queryResult as $registry) {
-        $table .= "<tr><td>{$registry['ID']}</td>" .
-            "<td>{$registry['nombre']}</td>" .
-            "<td>{$registry['localidad']}</td></tr>";
+        $table .= "<tr><td>{$registry["ID"]}</td>" .
+            "<td>{$registry["nombre"]}</td>" .
+            "<td>{$registry["localidad"]}</td></tr>";
     }
     $table .= "</table>";
     return $table;
@@ -43,8 +43,8 @@ function createInteractiveHTMLTableFromQuery($queryResult)
         $table = "<form action=\"ej1.php?valor=proceso\" method=\"post\"><table>";
         $table .= "<tr><td>BORRAR</td><td>ID</td><td>Nombre</td><td>Localidad</td></tr>";
         foreach ($queryResult as $registry) {
-            $table .= "<tr><td><input type=\"checkbox\" name=\"borrables[]\" value=\"{$registry['ID']}\"></td>"
-                . "<td>{$registry['ID']}</td><td>{$registry['nombre']}</td><td>{$registry['localidad']}</td></tr>";
+            $table .= "<tr><td><input type=\"checkbox\" name=\"borrables[]\" value=\"{$registry["ID"]}\"></td>"
+                . "<td>{$registry["ID"]}</td><td>{$registry["nombre"]}</td><td>{$registry["localidad"]}</td></tr>";
         }
         $table .= "</table><input type=\"submit\" value=\"Enviar\" name=\"enviar\"></form>";
         return $table;
@@ -98,7 +98,7 @@ function conectarBDD()
         $conection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $conection;
     } catch (PDOException $e) {
-        print '<p>Se ha producido un error por \n' . $e->getMessage() . '</p>';
+        print "<p>Se ha producido un error por \n" . $e->getMessage() . "</p>";
     }
 }
 
@@ -106,10 +106,29 @@ function validateAccess()
 {
     session_start();
 
-    if (isset($_SESSION['logIn'])) {
+    if (isset($_SESSION["logIn"])) {
         return true;
     } else {
         header("location: ej2_login.php");
         exit;
+    }
+}
+
+function validarSanear($dato)
+{
+    if ($dato == "" || preg_match("/^\s+$/", $dato)) {
+        return false;
+    } else {
+        return htmlspecialchars(trim(strip_tags($dato)), ENT_QUOTES, "UTF-8");
+    }
+}
+
+function conditionalBind($statement, $value, $column)
+{
+    if (empty($value)) {
+        $statement->bindValue(":{$column}", null, PDO::PARAM_NULL);
+    } else {
+        $statement->bindValue(":{$column}", $value, PDO::PARAM_STR);
+        clg("Successfuly binded {$value}");
     }
 }
