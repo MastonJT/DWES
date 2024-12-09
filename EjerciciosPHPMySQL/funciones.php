@@ -28,12 +28,25 @@ function clg($string)
 function createHTMLTableFromQuery($queryResult)
 {
     $table = "<table>";
-    $table .= "<tr><td>ID</td><td>Nombre</td><td>Localidad</td></tr>";
-    foreach ($queryResult as $registry) {
-        $table .= "<tr><td>{$registry["ID"]}</td>" .
-            "<td>{$registry["nombre"]}</td>" .
-            "<td>{$registry["localidad"]}</td></tr>";
+    //Creacion de la cabecera de la tabla
+    $tHead = "<tr>";
+    $firstRow = $queryResult->fetch(PDO::FETCH_ASSOC);
+    // $columns = array_keys($firstRow);
+    foreach ($firstRow as $column => $value) {
+        $tHead .= "<td>$column</td>";
     }
+    $tHead .= "</tr>";
+    //FIN creacion cabecera
+    //Creacion cuerpo tabla
+    $table .= $tHead;
+    foreach ($queryResult as $record) {
+        $table .= "<tr>";
+        foreach ($$record as $column => $value) {
+            $table .= "<td>{$value}</td>";
+        }
+        $table .= "</tr>";
+    }
+    //Fin creacion cuerpo tabla
     $table .= "</table>";
     return $table;
 }
@@ -41,10 +54,11 @@ function createInteractiveHTMLTableFromQuery($queryResult)
 {
     if ($queryResult) {
         $table = "<form action=\"ej1.php?valor=proceso\" method=\"post\"><table>";
-        $table .= "<tr><td>BORRAR</td><td>ID</td><td>Nombre</td><td>Localidad</td></tr>";
-        foreach ($queryResult as $registry) {
-            $table .= "<tr><td><input type=\"checkbox\" name=\"borrables[]\" value=\"{$registry["ID"]}\"></td>"
-                . "<td>{$registry["ID"]}</td><td>{$registry["nombre"]}</td><td>{$registry["localidad"]}</td></tr>";
+        $table .= "<tr><td>BORRAR</td><td>id</td><td>Nombre</td><td>Apellidos</td><td>Direccion</td><td>Telefono</td></tr>";
+        foreach ($queryResult as $record) {
+            $table .= "<tr><td><input type=\"checkbox\" name=\"borrables[]\" value=\"{$record["id"]}\"></td>"
+                . "<td>{$record["id"]}</td><td>{$record["nombre"]}</td><td>{$record["apellidos"]}</td>" .
+                "<td>{$record["direccion"]}</td><td>{$record["telefono"]}</td></tr>";
         }
         $table .= "</table><input type=\"submit\" value=\"Enviar\" name=\"enviar\"></form>";
         return $table;
@@ -85,7 +99,7 @@ function printMenuForm()
 ?>
     <ul>
         <li><a href="./ej2_insertarRegistro.php">Insertar Registros</a></li>
-        <li><a href="./ej2_2.php">Listado</a></li>
+        <li><a href="./ej2_listadoRegistros.php">Listado</a></li>
         <li><a href="./ej2_3.php">Borrar un Registro</a></li>
     </ul>
 <?php
