@@ -25,46 +25,66 @@ function clg($string)
     print "<script>console.log(\"{$string}\");</script>";
 }
 
-function createHTMLTableFromQuery($queryResult)
+function generateHTMLTableFromQuery($data) //donde data es un statement ejecutado
 {
-    $table = "<table>";
-    //Creacion de la cabecera de la tabla
-    $tHead = "<tr>";
-    $firstRow = $queryResult->fetch(PDO::FETCH_ASSOC);
-    // $columns = array_keys($firstRow);
-    foreach ($firstRow as $column => $value) {
-        $tHead .= "<td>$column</td>";
-    }
-    $tHead .= "</tr>";
-    //FIN creacion cabecera
-    //Creacion cuerpo tabla
-    $table .= $tHead;
-    foreach ($queryResult as $record) {
-        $table .= "<tr>";
-        foreach ($$record as $column => $value) {
-            $table .= "<td>{$value}</td>";
+    //No queremos columnas duplicadas
+    $data = $data->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($data)) {
+        // header
+        $html = '<table><thead><tr>';
+        foreach (array_keys($data[0]) as $column) {
+            $html .= "<th>$column</th>";
         }
-        $table .= "</tr>";
-    }
-    //Fin creacion cuerpo tabla
-    $table .= "</table>";
-    return $table;
-}
-function createInteractiveHTMLTableFromQuery($queryResult)
-{
-    if ($queryResult) {
-        $table = "<form action=\"ej1.php?valor=proceso\" method=\"post\"><table>";
-        $table .= "<tr><td>BORRAR</td><td>id</td><td>Nombre</td><td>Apellidos</td><td>Direccion</td><td>Telefono</td></tr>";
-        foreach ($queryResult as $record) {
-            $table .= "<tr><td><input type=\"checkbox\" name=\"borrables[]\" value=\"{$record["id"]}\"></td>"
-                . "<td>{$record["id"]}</td><td>{$record["nombre"]}</td><td>{$record["apellidos"]}</td>" .
-                "<td>{$record["direccion"]}</td><td>{$record["telefono"]}</td></tr>";
+        $html .= '</tr></thead>';
+        // body
+        $html .= '<tbody>';
+        foreach ($data as $row) {
+            $html .= '<tr>';
+            foreach ($row as $cell) {
+                $html .= "<td>$cell</td>";
+            }
+            $html .= '</tr>';
         }
-        $table .= "</table><input type=\"submit\" value=\"Enviar\" name=\"enviar\"></form>";
-        return $table;
+        $html .= '</tbody>';
     } else {
-        return "Parametro nulo en createInteractiveHTMLTableFromQuery";
+        $html = '<p>No hay datos</p>';
     }
+    $html .= '</table>';
+    return $html;
+}
+
+function generateInteractiveHTMLTableFromQuery($data) //donde data es un statement ejecutado
+{ //esta tabla permite eliminar registros
+    //No queremos columnas duplicadas
+    $data = $data->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($data)) {
+        // header
+        $html = '<form action="ej2_borrarRegistro.php" method="POST">' .
+            '<table>' .
+            '<thead>' .
+            '<tr>';
+        foreach (array_keys($data[0]) as $column) {
+            $html .= "<th>$column</th>";
+        }
+        $html .= "<th>Borrar</th>" .
+            '</tr></thead>';
+        // body
+        $html .= '<tbody>';
+        foreach ($data as $row) {
+            $html .= '<tr>';
+            foreach ($row as $cell) {
+                $html .= "<td>$cell</td>";
+            }
+            $html .= "<td><input type='checkbox' name='borrar[]' value=\"row['id']\"></td></tr>";
+        }
+        $html .= '</tbody>';
+    } else {
+        $html = '<p>No hay datos</p>';
+    }
+    $html .= '</table>' .
+        '<input type="submit" value="Enviar" name="enviar"/>' .
+        '</form>';
+    return $html;
 }
 
 function printUpperPage()
@@ -100,7 +120,7 @@ function printMenuForm()
     <ul>
         <li><a href="./ej2_insertarRegistro.php">Insertar Registros</a></li>
         <li><a href="./ej2_listadoRegistros.php">Listado</a></li>
-        <li><a href="./ej2_3.php">Borrar un Registro</a></li>
+        <li><a href="./ej2_borrarRegistro.php">Borrar un Registro</a></li>
     </ul>
 <?php
 }
