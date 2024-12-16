@@ -75,7 +75,7 @@ function generateInteractiveHTMLTableFromQuery($data) //donde data es un stateme
             foreach ($row as $cell) {
                 $html .= "<td>$cell</td>";
             }
-            $html .= "<td><input type='checkbox' name='borrar[]' value=\"row['id']\"></td></tr>";
+            $html .= "<td><input type='checkbox' name='borrar[]' value=\"{$row['id']}\"></td></tr>";
         }
         $html .= '</tbody>';
     } else {
