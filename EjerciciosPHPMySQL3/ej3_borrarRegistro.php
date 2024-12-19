@@ -29,10 +29,14 @@ if (isset($_REQUEST["enviar"])) {
     }
 } else {
     $query = "select * from personas";
+    if (isset($_GET['botonOrden'])) {
+        $parameters = explode("-", $_GET['botonOrden']);
+        $query = "select * from personas order by $parameters[0] $parameters[1]";
+    }
     $stmt = $connection->prepare($query);
     if ($stmt->execute()) {
         clg("Consulta exitosa");
-        $err = generateInteractiveHTMLTableFromQuery($stmt);
+        $err = generateInteractiveSortableHTMLTableFromQuery($stmt);
     } else {
         $err = 'Algo ha fallado al realizar la consulta';
     }

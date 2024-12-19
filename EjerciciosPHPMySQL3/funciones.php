@@ -59,7 +59,7 @@ function generateSortableHTMLTableFromQuery($data) //donde data es un statement 
     $data = $data->fetchAll(PDO::FETCH_ASSOC);
     if (!empty($data)) {
         // header
-        $html = '<form action><table><thead><tr>';
+        $html = '<form><table><thead><tr>';
         foreach (array_keys($data[0]) as $column) {
             $html .= "<th><button type='submit' value='{$column}-asc' name='botonOrden'>↑</button>$column<button type='submit' value='{$column}-desc' name='botonOrden'>↓</button></th>";
         }
@@ -75,12 +75,46 @@ function generateSortableHTMLTableFromQuery($data) //donde data es un statement 
         }
         $html .= '</tbody>';
     } else {
-        $html = '<p>No hay datos</p>';
+        $html = '<p>No hay registros</p>';
     }
     $html .= '</table></form>';
     return $html;
 }
 
+function generateInteractiveSortableHTMLTableFromQuery($data) //donde data es un statement ejecutado
+{ //esta tabla permite eliminar registros y ordenarlos
+    //No queremos columnas duplicadas
+    $data = $data->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($data)) {
+        // header
+        $html = '<form action="ej3_borrarRegistro.php" method="GET">' .
+            '<table>' .
+            '<thead>' .
+            '<tr>';
+        //cabeceras de columnas
+        foreach (array_keys($data[0]) as $column) {
+            $html .= "<th><button type='submit' value='{$column}-asc' name='botonOrden'>↑</button>$column<button type='submit' value='{$column}-desc' name='botonOrden'>↓</button></th>";
+        }
+        $html .= "<th>Borrar</th>" .
+            '</tr></thead>';
+        // body
+        $html .= '<tbody>';
+        foreach ($data as $row) {
+            $html .= '<tr>';
+            foreach ($row as $cell) {
+                $html .= "<td>$cell</td>";
+            }
+            $html .= "<td><input type='checkbox' name='borrar[]' value=\"{$row['id']}\"></td></tr>";
+        }
+        $html .= '</tbody>';
+        $html .= '</table>' .
+            '<input type="submit" value="Enviar" name="enviar"/>' .
+            '</form>';
+    } else {
+        $html = '<p>No hay datos</p>';
+    }
+    return $html;
+}
 function generateInteractiveHTMLTableFromQuery($data) //donde data es un statement ejecutado
 { //esta tabla permite eliminar registros
     //No queremos columnas duplicadas
@@ -106,12 +140,12 @@ function generateInteractiveHTMLTableFromQuery($data) //donde data es un stateme
             $html .= "<td><input type='checkbox' name='borrar[]' value=\"{$row['id']}\"></td></tr>";
         }
         $html .= '</tbody>';
+        $html .= '</table>' .
+            '<input type="submit" value="Enviar" name="enviar"/>' .
+            '</form>';
     } else {
         $html = '<p>No hay datos</p>';
     }
-    $html .= '</table>' .
-        '<input type="submit" value="Enviar" name="enviar"/>' .
-        '</form>';
     return $html;
 }
 
@@ -147,7 +181,7 @@ function printMenuForm()
 ?>
     <ul>
         <li><a href="./ej3_insertarRegistro.php">Insertar Registros</a></li>
-        <li><a href="./ej3_listadoRegistros.php">Listado</a></li>
+        <li><a href="./ej3_listadoRegistros.php">Listado y Busqueda</a></li>
         <li><a href="./ej3_borrarRegistro.php">Borrar un Registro</a></li>
     </ul>
 <?php
@@ -185,7 +219,7 @@ function validarSanear($dato)
     }
 }
 
-function conditionalBind($statement, $value, $column)
+function conditionalBind($statement, $value, $column) //hace bind null si esta vacio
 {
     if (empty($value)) {
         $statement->bindValue(":{$column}", null, PDO::PARAM_NULL);

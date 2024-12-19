@@ -5,7 +5,7 @@ session_start();
 $invalidCredentialsText = "";
 
 if (isset($_SESSION['logIn'])) {
-    header("Location: ej2.php");
+    header("Location: ej3.php");
     exit;
 } else if (isset($_REQUEST['logIn'])) {
     $name = $_REQUEST['name'];
@@ -26,7 +26,7 @@ if (isset($_SESSION['logIn'])) {
         $query = "CREATE TABLE personas (" .
             "id INT PRIMARY KEY AUTO_INCREMENT," .
             "nombre VARCHAR(15) NOT NULL," .
-            "apellidos VARCHAR(25) NOT NULL";
+            "apellidos VARCHAR(25) NOT NULL)";
         $connection->query($query);
         sleep(2);
         header("location: ej3.php");
