@@ -45,10 +45,10 @@ function startSession()
 
 function validateSession()
 {
-    if (isset($_SESSION)) {
+    if (isset($_SESSION) && session_name() == "Ej2PDO2223") {
         return true;
     } else {
         header("Location: login.php");
-        exit;
+        exit();
     }
 }
