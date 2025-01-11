@@ -1,0 +1,1 @@
+<?php//mostrar datos de sesion
