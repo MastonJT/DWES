@@ -1,30 +1,32 @@
 <?php
 
-function printUpperPage()
+function printPage($printableContent)
 {
-    echo "<!DOCTYPE html>" .
-        "<html lang='en'>" .
-        "<head>" .
-        "<meta charset='UTF-8'>" .
-        "<meta name='viewport' content='width=device-width, initial-scale=1.0'>" .
-        "<title>Document</title>" .
-        "</head>" .
-        "<body>";
-}
-
-function printLowerPage()
-{
-    echo "</body>" .
-        "</html>";
-}
-
-function printPage($printContent)
-{
-    printUpperPage();
-    foreach ($printContent as $function) {
-        $function();
+    //Esta funcion recursiva toma un array/string/funcion de cosas que generan/poseen contenido HTML y las ejecuta en orden
+    function generateBodyContents($printableContent)
+    {
+        switch (gettype($printableContent)) {
+            case 'array':
+                foreach ($printableContent as $element) {
+                    generateBodyContents($element);
+                }
+                break;
+            case 'string':
+                include $printableContent;
+                break;
+            default:
+                if (is_callable($printableContent)) {
+                    $printableContent();
+                } else {
+                    echo "Parametros de generacion de pagina invalidos.",
+                    exit();
+                }
+                break;
+        }
     }
-    printLowerPage();
+    include "HTMLSnippets/upperPage.php";
+    generateBodyContents($printableContent);
+    include "HTMLSnippets/lowerPage.php";
 }
 
 function validarSanear($data)
@@ -36,16 +38,9 @@ function validarSanear($data)
     }
 }
 
-function startSession()
-{
-    session_name("Ej2PDO2223");
-    session_id("Ej2PDO2223" . time());
-    session_start();
-}
-
 function validateSession()
 {
-    if (isset($_SESSION) && session_name() == "Ej2PDO2223") {
+    if (isset($_SESSION) && isset($_SESSION['usr']) && $_SESSION['usr'] == 'admin' && $_SESSION['psw'] == 'admin') {
         return true;
     } else {
         header("Location: login.php");
