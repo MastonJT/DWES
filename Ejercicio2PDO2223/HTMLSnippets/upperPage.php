@@ -7,9 +7,16 @@
     <title>Document</title>
     <style>
         table,
-        td {
+        td,
+        th {
             border: 1px solid olive;
             border-collapse: collapse;
+            padding: 5px;
+        }
+
+        a {
+            text-decoration: none;
+            font-size: bold;
         }
     </style>
 </head>
