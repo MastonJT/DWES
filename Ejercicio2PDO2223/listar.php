@@ -4,4 +4,4 @@ session_name("Ej2PDO2223");
 session_start();
 validateSession();
 include "dbFunctions.php";
-printPage("HTMLSnippets/contactList.php");
+printPage(["HTMLSnippets/navBox.php", "HTMLSnippets/contactList.php"]);

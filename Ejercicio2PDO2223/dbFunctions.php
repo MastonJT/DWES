@@ -63,6 +63,22 @@ function insertRecord($name, $surname)
     }
 }
 
+function removeRecord($ids)
+{
+    global $connection;
+    try {
+        foreach ($ids as $id) {
+            $query = "delete from contactos where id=:id";
+            $stmnt = $connection->prepare($query);
+            $stmnt->bindParam(':id', $id);
+            $stmnt->execute();
+            return "<p>Supresion realizada con exito.</p>";
+        }
+    } catch (PDOException $e) {
+        print $e->getMessage();
+    }
+}
+
 function selectAllContactos()
 {
     global $connection;
