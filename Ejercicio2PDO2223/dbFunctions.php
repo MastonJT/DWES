@@ -83,10 +83,19 @@ function selectAllContactos()
 {
     global $connection;
     try {
-        $query = 'select * from contactos';
-        $stmt = $connection->prepare($query);
-        $stmt->execute();
-        return $stmt;
+        if (isset($_GET['col']) && isset($_GET['ord'])) {
+            //recordar que PDO inserta comillas y por ende los bindparams no sirven para syntaxis, solo valores
+            $order = [validarSanear($_GET['col']), validarSanear($_GET['ord'])];
+            $query = "select * from contactos order by $order[0] $order[1]";
+            $stmt = $connection->prepare($query);
+            $stmt->execute();
+            return $stmt;
+        } else {
+            $query = 'select * from contactos';
+            $stmt = $connection->prepare($query);
+            $stmt->execute();
+            return $stmt;
+        }
     } catch (PDOException $e) {
         print $e->getMessage();
     }
