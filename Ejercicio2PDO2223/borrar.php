@@ -5,6 +5,10 @@ session_start();
 validateSession();
 include "dbFunctions.php";
 if (isset($_REQUEST['confirmarBorrado'])) {
-    removeRecord($_REQUEST['borrar']);
+    if (isset($_REQUEST['borrar'])) {
+        removeRecord($_REQUEST['borrar']);
+    } else {
+        echo "<p style='color: red;'>No se ha seleccionado nada para borrar.</p>";
+    }
 }
 printPage(["HTMLSnippets/navBox.php", "HTMLSnippets/remContact.php"]);

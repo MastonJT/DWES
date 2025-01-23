@@ -7,6 +7,9 @@ $td = ["<td>", "</td>"];
 $th = ["<th>", "</th>"];
 $output = "";
 $result = selectAllContactos();
+if (isset($_REQUEST['buscar'])) {
+    $result = searchRecords($_REQUEST['inNom'], $_REQUEST['inApe']);
+}
 $colCount = $result->columnCount();
 //construccion de la tabla
 //cabecera

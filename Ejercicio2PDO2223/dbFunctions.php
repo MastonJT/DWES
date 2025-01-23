@@ -65,6 +65,10 @@ function insertRecord($name, $surname)
 
 function removeRecord($ids)
 {
+    $ids = array_map(function ($id) {
+        return  str_replace("borrar", "", $id);
+    }, $ids);
+    print_r($ids);
     global $connection;
     try {
         foreach ($ids as $id) {
@@ -72,7 +76,7 @@ function removeRecord($ids)
             $stmnt = $connection->prepare($query);
             $stmnt->bindParam(':id', $id);
             $stmnt->execute();
-            return "<p>Supresion realizada con exito.</p>";
+            echo "<p>Supresion realizada con exito.</p>";
         }
     } catch (PDOException $e) {
         print $e->getMessage();
@@ -98,5 +102,40 @@ function selectAllContactos()
         }
     } catch (PDOException $e) {
         print $e->getMessage();
+    }
+}
+
+function searchRecords($name, $surname)
+{
+    global $connection;
+    try {
+        $query = "select * from contactos where nombre like(:name) and apellidos like(:surname)";
+        $stmnt = $connection->prepare($query);
+        $name = '%' . $name . '%';
+        $surname = '%' . $surname . '%';
+        $stmnt->bindParam(':name',  $name);
+        $stmnt->bindParam(':surname', $surname);
+        $stmnt->execute();
+        return $stmnt;
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+
+function modifyContact($contactId, $newName, $newSurname)
+{
+    global $connection;
+    try {
+        $contactId = str_replace("modificar", "", $contactId);
+        echo $contactId . " " . $newName . " " . $newSurname;
+        $query = "update contactos set nombre=:newName, apellidos=:newSurname where id=:contactId";
+        $stmnt = $connection->prepare($query);
+        $stmnt->bindParam(':newName', $newName);
+        $stmnt->bindParam(':newSurname', $newSurname);
+        $stmnt->bindParam(':contactId', $contactId);
+        $stmnt->execute();
+        echo "Actualizacion realizada con exito de " . $newName;
+    } catch (PDOException $e) {
+        echo $e->getMessage();
     }
 }
